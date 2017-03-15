@@ -1,4 +1,6 @@
 apply plugin: 'com.android.library'
+apply plugin: 'com.github.dcendents.android-maven'
+apply plugin: 'com.jfrog.bintray'
 apply from: '../config/quality.gradle'
 
 android {
@@ -9,11 +11,9 @@ android {
         minSdkVersion 19
         targetSdkVersion 25
         versionCode 1
-        versionName "1.0"
-
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-
+        versionName '0.0.0'
     }
+
     buildTypes {
         release {
             minifyEnabled false
@@ -24,4 +24,103 @@ android {
 
 dependencies {
     compile 'com.android.support:appcompat-v7:25.1.0'
+}
+
+task sourcesJar(type: Jar) {
+    from android.sourceSets.main.java.srcDirs
+    classifier = 'sources'
+}
+
+task javadoc(type: Javadoc) {
+    source = android.sourceSets.main.java.srcDirs
+    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+    failOnError = false
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+}
+
+artifacts {
+    archives javadocJar
+    archives sourcesJar
+}
+
+task findConventions << {
+    println project.getConvention()
+}
+
+group = 'com.geronimostudios.ui' //bintray org/group name
+version = '0.0.0' //version
+
+install {
+    repositories.mavenInstaller {
+        pom.project {
+            name 'com.geronimostudios.ui'
+            description 'A bottom menu view for Android'
+            url 'https://github.com/geronimoagency/BottomMenuView-Android'
+
+            packaging 'aar'
+            groupId 'com.geronimostudios.ui'
+            artifactId 'bottommenuview'
+            version '0.0.0'
+
+            licenses {
+                license {
+                    name 'The Apache Software License, Version 2.0'
+                    url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                    distribution 'repo'
+                }
+            }
+            scm {
+                connection 'https://github.com/geronimoagency/BottomMenuView-Android.git'
+                url 'https://github.com/geronimoagency/BottomMenuView-Android'
+
+            }
+            developers {
+                developer {
+                    id 'jeromec-geronimo'
+                    name 'Jérôme Caudoux'
+                    email 'jerome.c@geronimostudios.com'
+                }
+            }
+        }
+    }
+}
+
+Properties properties = new Properties()
+properties.load(project.rootProject.file('local.properties').newDataInputStream())
+
+bintray {
+    user = properties.getProperty("bintray.user")
+    key = properties.getProperty("bintray.apikey")
+
+    configurations = ['archives'] //When uploading configuration files
+
+    dryRun = false //[Default: false] Whether to run this as dry-run, without deploying
+    publish = true //[Default: false] Whether version should be auto published after an upload
+    override = true //[Default: false] Whether to override version artifacts already published
+
+    pkg {
+        repo = 'geronimostudios'
+        name = 'com.geronimostudios.ui'
+        userOrg = 'geronimostudios'
+        licenses = ['Apache-2.0']
+        vcsUrl = 'https://github.com/geronimoagency/BottomMenuView-Android.git'
+        issueTrackerUrl = 'https://github.com/geronimoagency/BottomMenuView-Android/issues'
+        websiteUrl = 'http://www.geronimo-agency.com'
+        labels = ['android', 'menu', 'view']
+        publicDownloadNumbers = true
+        version {
+            vcsTag = '0.0.0'
+            name = '0.0.0'
+            desc = 'A bottom menu view for Android'
+
+            gpg {
+                sign = true //Determines whether to GPG sign the files. The default is false
+                passphrase = properties.getProperty("bintray.gpg.passphrase") // The passphrase for GPG signing'
+            }
+        }
+    }
 }
