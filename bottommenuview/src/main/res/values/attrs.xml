@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="BottomMenuView">
+        <attr name="tabBackground" format="reference" />
+        <attr name="tabIconSize" format="dimension" />
+        <attr name="tabLineColor" format="color" />
+        <attr name="tabLineHeight" format="dimension" />
+        <attr name="tabLineWidth" format="dimension">
+            <enum name="auto" value="-1"/>
+            <enum name="full_width" value="-2"/>
+        </attr>
+    </declare-styleable>
+</resources>

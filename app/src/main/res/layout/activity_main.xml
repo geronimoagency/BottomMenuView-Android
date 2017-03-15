@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/activity_main"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.geronimostudios.bottommenusample.MainActivity">
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/view_pager"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+    <View
+        android:layout_marginEnd="@dimen/default_padding"
+        android:layout_marginStart="@dimen/default_padding"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/default_separator" />
+
+    <com.geronimostudios.ui.BottomMenuView
+        app:tabIconSize="25dp"
+        app:tabLineWidth="70dp"
+        app:tabLineColor="@color/colorPrimary"
+        app:tabLineHeight="6dp"
+        app:tabBackground="@drawable/bg_ripple_grey_over_white"
+        android:id="@+id/bottom_menu_view"
+        android:padding="@dimen/default_padding"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+</LinearLayout>
