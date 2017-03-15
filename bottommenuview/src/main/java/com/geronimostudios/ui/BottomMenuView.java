@@ -31,12 +31,11 @@ import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BottomMenuView extends View implements ViewPager.OnPageChangeListener {
+public class BottomMenuView extends View {
 
     public static final int LINE_AUTO = -1;
     public static final int LINE_FULL_WIDTH = -2;
     public static final int LINE_CUSTOM = -3;
-    private float mLastTouchX;
 
     @IntDef({LINE_AUTO, LINE_FULL_WIDTH, LINE_CUSTOM})
     @Retention(RetentionPolicy.SOURCE)
@@ -52,6 +51,7 @@ public class BottomMenuView extends View implements ViewPager.OnPageChangeListen
     private @LineMode int mUnderlineMode;
     private int mCurrentPage;
     private int mLastPage;
+    private float mLastTouchX;
     private Listener mListener;
 
     /**
@@ -64,6 +64,36 @@ public class BottomMenuView extends View implements ViewPager.OnPageChangeListen
      */
     private @FloatRange(from = 0f, to = 1f) float mScrollPageOffset;
     private @Nullable Drawable mDefaultTabBackground;
+
+    private ViewPager.OnPageChangeListener mViewPagerPageChangeListener
+            = new ViewPager.OnPageChangeListener() {
+        /**
+         * Callback of the viewpager used when the menu has been setup with
+         * {@link BottomMenuView#setupWith(ViewPager)}.
+         *
+         * @param page current page of positionOffset
+         * @param positionOffset percentage scrolled
+         * @param positionOffsetPixels offset scrolled in pixels
+         */
+        @Override
+        public void onPageScrolled(int page,
+                                   @FloatRange(from = 0f, to = 1f) float positionOffset,
+                                   int positionOffsetPixels) {
+            mScrollCurrentPage = page;
+            mScrollPageOffset = positionOffset;
+            invalidate();
+        }
+
+        @Override
+        public void onPageSelected(int position) {
+            internalChangePage(position);
+        }
+
+        @Override
+        public void onPageScrollStateChanged(int state) {
+            // ignore
+        }
+    };
 
     public BottomMenuView(Context context) {
         super(context);
@@ -159,25 +189,24 @@ public class BottomMenuView extends View implements ViewPager.OnPageChangeListen
                 Tab tab = mTabs.get(tabIndex);
                 Drawable drawable = tab.getBackgroundDrawable();
                 if (drawable != null && drawable.isStateful()) {
+                    int[] newState;
                     if (index == tabIndex) { // set current tab selected
-                        if (mCurrentPage == mTabs.indexOf(tab)) {
-                            int[] newState = new int[stateSet.length + 1];
-                            System.arraycopy(stateSet, 0, newState, 0, stateSet.length);
-                            newState[stateSet.length] = android.R.attr.state_selected;
-                            stateSet = newState;
-                        }
-                        drawable.setState(stateSet);
-                        invalidate();
-                    } else { // remove selected state
-                        for (int i = 0; i < stateSet.length; ++i) {
-                            int state = stateSet[i];
-                            if (state == android.R.attr.state_selected) {
-                                stateSet[i] = 0;
+                        newState = new int[stateSet.length + 1];
+                        System.arraycopy(stateSet, 0, newState, 0, stateSet.length);
+                        newState[stateSet.length] = android.R.attr.state_selected;
+                    } else { // remove selected and pressed state
+                        newState = new int[stateSet.length];
+                        System.arraycopy(stateSet, 0, newState, 0, stateSet.length);
+                        for (int i = 0; i < newState.length; ++i) {
+                            int state = newState[i];
+                            if (state == android.R.attr.state_selected
+                                    || state == android.R.attr.state_pressed) {
+                                newState[i] = 0;
                             }
                         }
-                        drawable.setState(stateSet);
-                        invalidate();
                     }
+                    drawable.setState(newState);
+                    invalidate();
                 }
             }
         }
@@ -245,8 +274,9 @@ public class BottomMenuView extends View implements ViewPager.OnPageChangeListen
      * @param viewPager to be used.
      */
     public void setupWith(ViewPager viewPager) {
+        unregisterDrawableCallback();
         mViewPager = viewPager;
-        mViewPager.addOnPageChangeListener(this);
+        mViewPager.addOnPageChangeListener(mViewPagerPageChangeListener);
         mScrollCurrentPage = mViewPager.getCurrentItem();
         mScrollPageOffset = 0f;
         mLastPage = mViewPager.getCurrentItem();
@@ -274,18 +304,39 @@ public class BottomMenuView extends View implements ViewPager.OnPageChangeListen
      *
      * @param tabs The list of tabs
      */
-    public void setTabs(@Nullable List<Tab> tabs) {
+    public void setupWith(@Nullable List<Tab> tabs) {
         if (mViewPager != null) {
-            mViewPager.removeOnPageChangeListener(this);
+            mViewPager.removeOnPageChangeListener(mViewPagerPageChangeListener);
             mViewPager = null;
         }
+        unregisterDrawableCallback();
         mScrollCurrentPage = 0;
         mScrollPageOffset = 0f;
         mLastPage = 0;
         mCurrentPage = 0;
 
         mTabs = tabs;
+
+        if (mTabs != null) {
+            for (Tab tab : mTabs) {
+                Drawable drawable = tab.getBackgroundDrawable();
+                if (drawable != null) {
+                    drawable.setCallback(this);
+                }
+            }
+        }
         invalidate();
+    }
+
+    private void unregisterDrawableCallback() {
+        if (mTabs != null) {
+            for (Tab tab : mTabs) {
+                Drawable drawable = tab.getBackgroundDrawable();
+                if (drawable != null) {
+                    drawable.setCallback(null);
+                }
+            }
+        }
     }
 
     private Drawable getCopyOfDefaultTabBackground() {
@@ -402,45 +453,13 @@ public class BottomMenuView extends View implements ViewPager.OnPageChangeListen
     }
 
     /**
-     * Callback of the viewpager used when the menu has been setup with
-     * {@link #setupWith(ViewPager)}.
-     *
-     * @param page current page of positionOffset
-     * @param positionOffset percentage scrolled
-     * @param positionOffsetPixels offset scrolled in pixels
-     */
-    @Override
-    public void onPageScrolled(int page,
-                               @FloatRange(from = 0f, to = 1f) float positionOffset,
-                               int positionOffsetPixels) {
-        mScrollCurrentPage = page;
-        mScrollPageOffset = positionOffset;
-        invalidate();
-    }
-
-    /**
-     * Callback of {@link #doChangePageAnimation(int)}.
+     * Callback of {@link #setCurrentPage(int)}.
      */
     @SuppressWarnings("unused")
     private void setInternalPageScrolled(float page) {
         mScrollCurrentPage = (int) Math.floor(page);
         mScrollPageOffset = page - mScrollCurrentPage;
         invalidate();
-    }
-
-    @Override
-    public void onPageSelected(int position) {
-        mLastPage = mCurrentPage;
-        mCurrentPage = position;
-
-        if (mListener != null) {
-            mListener.onMenuPageChanged(position);
-        }
-    }
-
-    @Override
-    public void onPageScrollStateChanged(int state) {
-        // ignore
     }
 
     @Override
@@ -459,7 +478,7 @@ public class BottomMenuView extends View implements ViewPager.OnPageChangeListen
                 if (mViewPager != null) {
                     mViewPager.setCurrentItem(page);
                 } else {
-                    doChangePageAnimation(page);
+                    setCurrentPage(page);
                 }
                 return true;
             default:
@@ -468,24 +487,53 @@ public class BottomMenuView extends View implements ViewPager.OnPageChangeListen
     }
 
     /**
-     * Called when the viewpager is setup with {@link #setTabs(List)} and that the user clicks
-     * on a {@link Tab}.
+     * Change the current selected page without animation.
+     *
+     * @param position the new page position
      */
-    private void doChangePageAnimation(final int page) {
-        ObjectAnimator animator = ObjectAnimator.ofFloat(
-                this,
-                "internalPageScrolled",
-                mCurrentPage,
-                page
-        );
-        animator.setAutoCancel(true);
-        animator.setDuration(150);
-        animator.setInterpolator(new DecelerateInterpolator());
-
-        onPageSelected(page);
-        animator.start();
+    public void setCurrentPage(final int position) {
+        setCurrentPage(position, true);
     }
 
+    /**
+     * Change the current selected page with or without animation.
+     *
+     * @param position the new page position
+     */
+    public void setCurrentPage(final int position, boolean animate) {
+        if (animate) {
+            ObjectAnimator animator = ObjectAnimator.ofFloat(
+                    this,
+                    "internalPageScrolled",
+                    mCurrentPage,
+                    position
+            );
+            animator.setAutoCancel(true);
+            animator.setDuration(150);
+            animator.setInterpolator(new DecelerateInterpolator());
+
+            internalChangePage(position);
+            animator.start();
+        } else {
+            mScrollCurrentPage = position;
+            mScrollPageOffset = 0;
+            internalChangePage(position);
+        }
+    }
+
+    private void internalChangePage(int position) {
+        mLastPage = mCurrentPage;
+        mCurrentPage = position;
+
+        if (mListener != null) {
+            mListener.onMenuPageChanged(position);
+        }
+        invalidate();
+    }
+
+    /**
+     * Set a listener to his {@link BottomMenuView} to handle events.
+     */
     public void setListener(Listener listener) {
         mListener = listener;
     }

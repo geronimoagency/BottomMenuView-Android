@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Bottom Menu Sample</string>
+    <string name="menu_item_with_view_pager">Menu with ViewPager</string>
+    <string name="menu_item_with_custom_tabs">Menu with custom tabs</string>
 </resources>
