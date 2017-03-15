@@ -41,7 +41,7 @@ public class MainActivity extends AppCompatActivity implements BottomMenuView.Li
                 android.R.drawable.ic_menu_gallery,
                 ContextCompat.getDrawable(this, R.drawable.bg_ripple_grey_over_white)
         ));
-        menuView.setTabs(tabs);
+        //menuView.setTabs(tabs);
     }
 
     @Override

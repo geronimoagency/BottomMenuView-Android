@@ -31,9 +31,6 @@ import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by jerome on 03/03/17.
- */
 public class BottomMenuView extends View implements ViewPager.OnPageChangeListener {
 
     public static final int LINE_AUTO = -1;
@@ -58,12 +55,12 @@ public class BottomMenuView extends View implements ViewPager.OnPageChangeListen
     private Listener mListener;
 
     /**
-     * current page of positionOffset
+     * Current page of positionOffset.
      */
     private int mScrollCurrentPage;
 
     /**
-     *  percentage scrolled from {@link BottomMenuView#mScrollCurrentPage} to the next page
+     * Percentage scrolled from {@link BottomMenuView#mScrollCurrentPage} to the next page.
      */
     private @FloatRange(from = 0f, to = 1f) float mScrollPageOffset;
     private @Nullable Drawable mDefaultTabBackground;
@@ -110,13 +107,17 @@ public class BottomMenuView extends View implements ViewPager.OnPageChangeListen
                 switch (tv.type) {
                     case TypedValue.TYPE_DIMENSION:
                         mUnderlineMode = LINE_CUSTOM;
-                        mUnderlineWidth = a.getDimension(R.styleable.BottomMenuView_tabLineWidth, 0f);
+                        mUnderlineWidth
+                                = a.getDimension(R.styleable.BottomMenuView_tabLineWidth, 0f);
                         break;
                     case TypedValue.TYPE_FLOAT:
-                        mUnderlineMode =
-                                a.getInteger(R.styleable.BottomMenuView_tabLineWidth, LINE_AUTO) == LINE_AUTO
-                                        ? LINE_AUTO
-                                        : LINE_FULL_WIDTH;
+                        @LineMode int mode
+                                = a.getInteger(R.styleable.BottomMenuView_tabLineWidth, LINE_AUTO);
+                        if (mode == LINE_AUTO) {
+                            mUnderlineMode = LINE_AUTO;
+                        } else {
+                            mUnderlineMode = LINE_FULL_WIDTH;
+                        }
                         break;
                     default:
                         mUnderlineMode = LINE_AUTO;
@@ -224,13 +225,25 @@ public class BottomMenuView extends View implements ViewPager.OnPageChangeListen
         return super.verifyDrawable(who) || verified;
     }
 
+    /**
+     * Used only when {@link #isInEditMode()} returns true.
+     */
     private void fillWithFakeData() {
         mTabs = new ArrayList<>();
-        mTabs.add(new Tab(getContext(), android.R.drawable.ic_menu_preferences, getCopyOfDefaultTabBackground()));
-        mTabs.add(new Tab(getContext(), android.R.drawable.ic_menu_camera, getCopyOfDefaultTabBackground()));
-        mTabs.add(new Tab(getContext(), android.R.drawable.ic_menu_gallery, getCopyOfDefaultTabBackground()));
+        mTabs.add(new Tab(getContext(), android.R.drawable.ic_menu_preferences,
+                getCopyOfDefaultTabBackground()));
+        mTabs.add(new Tab(getContext(), android.R.drawable.ic_menu_camera,
+                getCopyOfDefaultTabBackground()));
+        mTabs.add(new Tab(getContext(), android.R.drawable.ic_menu_gallery,
+                getCopyOfDefaultTabBackground()));
     }
 
+    /**
+     * Setup this {@link BottomMenuView} with a {@link ViewPager}.
+     * The adapter used by the view pager has to implements {@link Adapter}.
+     *
+     * @param viewPager to be used.
+     */
     public void setupWith(ViewPager viewPager) {
         mViewPager = viewPager;
         mViewPager.addOnPageChangeListener(this);
@@ -246,11 +259,21 @@ public class BottomMenuView extends View implements ViewPager.OnPageChangeListen
         Adapter adapter = (Adapter) vpAdapter;
         mTabs = new ArrayList<>();
         for (int i = 0; i < vpAdapter.getCount(); ++i) {
-            mTabs.add(new Tab(getContext(), adapter.getMenuIcon(i), getCopyOfDefaultTabBackground()));
+            mTabs.add(new Tab(
+                    getContext(),
+                    adapter.getMenuIcon(i),
+                    getCopyOfDefaultTabBackground()
+            ));
         }
         invalidate();
     }
 
+    /**
+     * Setup this {@link BottomMenuView} by providing a list of {@link Tab}.
+     * You can implements {@link Listener} and use {@link #setListener(Listener)} to handle events.
+     *
+     * @param tabs The list of tabs
+     */
     public void setTabs(@Nullable List<Tab> tabs) {
         if (mViewPager != null) {
             mViewPager.removeOnPageChangeListener(this);
@@ -297,7 +320,12 @@ public class BottomMenuView extends View implements ViewPager.OnPageChangeListen
 
             Drawable background = tab.getBackgroundDrawable();
             if (background != null) {
-                background.setBounds(i * widthPerItem, 0, (i + 1) * widthPerItem, getMeasuredHeight());
+                background.setBounds(
+                        i * widthPerItem, // left
+                        0, // top
+                        (i + 1) * widthPerItem, // right
+                        getMeasuredHeight() // bottom
+                );
                 background.draw(canvas);
             }
 
@@ -317,13 +345,19 @@ public class BottomMenuView extends View implements ViewPager.OnPageChangeListen
                 - (mUnderlineWidth / 2f)
                 + (widthPerItem * mScrollPageOffset));
         int offsetY = (int) (getHeight() - mUnderlineHeight);
-        mUnderlineDrawable.setBounds(offsetX, offsetY, (int) (offsetX + mUnderlineWidth), getHeight());
+        mUnderlineDrawable.setBounds(
+                offsetX,
+                offsetY,
+                (int) (offsetX + mUnderlineWidth),
+                getHeight()
+        );
         mUnderlineDrawable.draw(canvas);
     }
 
     /**
      * Get the offset y in pixel of the icon at a specific page.
-     * The default behavior is to move vertically up to 'paddingTop / 2' pixels from the center position.
+     * The default behavior is to move vertically up to 'paddingTop / 2' pixels from the center
+     * position.
      *
      * @param iconPage the page of the icon
      * @return an y offset at which the icon should be draw
@@ -333,10 +367,10 @@ public class BottomMenuView extends View implements ViewPager.OnPageChangeListen
                 || (iconPage != mCurrentPage && iconPage != mLastPage)) {
             return getPaddingTop();
         }
-        @FloatRange(from = 0f, to = 1f) float percent =
-                (iconPage == mScrollCurrentPage)
-                        ? 1f - mScrollPageOffset
-                        : mScrollPageOffset;
+        @FloatRange(from = 0f, to = 1f) float percent
+                = (iconPage == mScrollCurrentPage)
+                ? 1f - mScrollPageOffset
+                : mScrollPageOffset;
         return (int) (getPaddingTop() - (getPaddingTop() / 4f) * percent);
     }
 
@@ -367,15 +401,26 @@ public class BottomMenuView extends View implements ViewPager.OnPageChangeListen
         }
     }
 
+    /**
+     * Callback of the viewpager used when the menu has been setup with
+     * {@link #setupWith(ViewPager)}.
+     *
+     * @param page current page of positionOffset
+     * @param positionOffset percentage scrolled
+     * @param positionOffsetPixels offset scrolled in pixels
+     */
     @Override
-    public void onPageScrolled(int page, // current page of positionOffset
-                               @FloatRange(from = 0f, to = 1f) float positionOffset, // percentage scrolled
-                               int positionOffsetPixels) { // offset scrolled in pixels
+    public void onPageScrolled(int page,
+                               @FloatRange(from = 0f, to = 1f) float positionOffset,
+                               int positionOffsetPixels) {
         mScrollCurrentPage = page;
         mScrollPageOffset = positionOffset;
         invalidate();
     }
 
+    /**
+     * Callback of {@link #doChangePageAnimation(int)}.
+     */
     @SuppressWarnings("unused")
     private void setInternalPageScrolled(float page) {
         mScrollCurrentPage = (int) Math.floor(page);
@@ -422,8 +467,17 @@ public class BottomMenuView extends View implements ViewPager.OnPageChangeListen
         }
     }
 
+    /**
+     * Called when the viewpager is setup with {@link #setTabs(List)} and that the user clicks
+     * on a {@link Tab}.
+     */
     private void doChangePageAnimation(final int page) {
-        ObjectAnimator animator = ObjectAnimator.ofFloat(this, "internalPageScrolled", mCurrentPage * 1f, page * 1f);
+        ObjectAnimator animator = ObjectAnimator.ofFloat(
+                this,
+                "internalPageScrolled",
+                mCurrentPage,
+                page
+        );
         animator.setAutoCancel(true);
         animator.setDuration(150);
         animator.setInterpolator(new DecelerateInterpolator());
@@ -436,6 +490,9 @@ public class BottomMenuView extends View implements ViewPager.OnPageChangeListen
         mListener = listener;
     }
 
+    /**
+     * Model a of Tab used by {@link BottomMenuView}.
+     */
     public static class Tab {
         private @Nullable Drawable mDrawable;
         private @NonNull Drawable mIconDrawable;
