@@ -487,7 +487,7 @@ public class BottomMenuView extends View {
     }
 
     /**
-     * Change the current selected page without animation.
+     * Change the current selected page with an animation.
      *
      * @param position the new page position
      */
