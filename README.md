@@ -10,10 +10,12 @@ The sample app is available in this repository under sample/.
 
 Gradle
 =======
-Since the library is promoted on maven central, just add a new gradle dependency :
+Include the dependency [Download (.aar)](https://bintray.com/geronimostudios/geronimostudios/download_file?file_path=com%2Fgeronimostudios%2Fui%2Fbottommenuview%2F0.0.1%2Fbottommenuview-0.0.1.aar) :
 
 ```groovy
+dependencies {
     compile 'com.geronimostudios.ui:bottommenuview:0.0.1'
+}
 ```
 
 Example
