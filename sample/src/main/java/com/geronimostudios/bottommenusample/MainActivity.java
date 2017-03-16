@@ -68,31 +68,24 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mViewPager.setVisibility(View.VISIBLE);
         mNoViewPagerContainer.setVisibility(View.GONE);
 
-        mMenuView.setupWith(mViewPager);
-        mMenuView.setIconSize((int) getResources().getDimension(R.dimen.sample_icon_height_25));
-        mMenuView.setUnderlineHeight((int) getResources().getDimension(R.dimen.sample_underline_height_4));
-        mMenuView.setUnderlineColor(ContextCompat.getColor(this, R.color.colorPrimaryDark));
-        mMenuView.setTabBackground(ContextCompat.getDrawable(this, R.drawable.bg_ripple_grey_over_white));
-        mMenuView.setUnderlineMode(BottomMenuView.LINE_AUTO);
-
         mMenuView.setListener(new BottomMenuView.Listener() {
             @Override
             public void onMenuPageChanged(int page) {
                 Log.d("debug", "page changed with viewpager : " + page);
             }
         });
+
+        mMenuView.setupWith(mViewPager);
+        mMenuView.setIconSize((int) getResources().getDimension(R.dimen.sample_icon_height_25));
+        mMenuView.setUnderlineHeight((int) getResources().getDimension(R.dimen.sample_underline_height_4));
+        mMenuView.setUnderlineColor(ContextCompat.getColor(this, R.color.colorPrimaryDark));
+        mMenuView.setTabBackground(ContextCompat.getDrawable(this, R.drawable.bg_ripple_grey_over_white));
+        mMenuView.setUnderlineMode(BottomMenuView.LINE_AUTO);
     }
 
     private void onSetupMenuWithCustomTabsRequested() {
         mViewPager.setVisibility(View.GONE);
         mNoViewPagerContainer.setVisibility(View.VISIBLE);
-
-        mMenuView.setupWith(createDummyTabs());
-        mMenuView.setIconSize((int) getResources().getDimension(R.dimen.sample_icon_height_40));
-        mMenuView.setUnderlineHeight((int) getResources().getDimension(R.dimen.sample_underline_height_2));
-        mMenuView.setUnderlineColor(ContextCompat.getColor(this, R.color.colorAccent));
-        mMenuView.setTabBackground(ContextCompat.getDrawable(this, R.drawable.bg_sample));
-        mMenuView.setUnderlineMode(BottomMenuView.LINE_FULL_WIDTH);
 
         mMenuView.setListener(new BottomMenuView.Listener() {
             @Override
@@ -103,6 +96,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 ));
             }
         });
+
+        mMenuView.setupWith(createDummyTabs());
+        mMenuView.setIconSize((int) getResources().getDimension(R.dimen.sample_icon_height_40));
+        mMenuView.setUnderlineHeight((int) getResources().getDimension(R.dimen.sample_underline_height_2));
+        mMenuView.setUnderlineColor(ContextCompat.getColor(this, R.color.colorAccent));
+        mMenuView.setTabBackground(ContextCompat.getDrawable(this, R.drawable.bg_sample));
+        mMenuView.setUnderlineMode(BottomMenuView.LINE_FULL_WIDTH);
     }
 
     private ArrayList<BottomMenuView.Tab> createDummyTabs() {

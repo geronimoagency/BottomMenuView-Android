@@ -382,6 +382,10 @@ public class BottomMenuView extends View {
                     getCopyOfDefaultTabBackground()
             ));
         }
+
+        if (mListener != null) {
+            mListener.onMenuPageChanged(mCurrentPage);
+        }
         invalidate();
     }
 
@@ -411,6 +415,10 @@ public class BottomMenuView extends View {
                     drawable.setCallback(this);
                 }
             }
+        }
+
+        if (mListener != null) {
+            mListener.onMenuPageChanged(mCurrentPage);
         }
         invalidate();
     }
