@@ -2,4 +2,7 @@
     <string name="app_name">Bottom Menu Sample</string>
     <string name="menu_item_with_view_pager">Menu with ViewPager</string>
     <string name="menu_item_with_custom_tabs">Menu with custom tabs</string>
+    <string name="goto_tab_1">Tab 1</string>
+    <string name="goto_tab_2">Tab 2</string>
+    <string name="goto_tab_3">Tab 3</string>
 </resources>

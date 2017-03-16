@@ -9,12 +9,49 @@
     android:layout_height="match_parent"
     tools:context="com.geronimostudios.bottommenusample.MainActivity">
 
-    <android.support.v4.view.ViewPager
-        android:id="@+id/view_pager"
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1" />
+        android:layout_weight="1">
 
+        <android.support.v4.view.ViewPager
+            android:id="@+id/view_pager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <LinearLayout
+            android:gravity="center"
+            android:id="@+id/no_view_pager_container"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:layout_margin="@dimen/default_padding"
+                android:id="@+id/no_view_pager_position"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="Selected tab : 1" />
+
+            <Button
+                android:id="@+id/goto_tab_1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/goto_tab_1" />
+
+            <Button
+                android:id="@+id/goto_tab_2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/goto_tab_2" />
+
+            <Button
+                android:id="@+id/goto_tab_3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/goto_tab_3" />
+        </LinearLayout>
+    </FrameLayout>
     <View
         android:layout_marginEnd="@dimen/default_padding"
         android:layout_marginStart="@dimen/default_padding"
@@ -24,7 +61,7 @@
 
     <com.geronimostudios.ui.BottomMenuView
         app:tabIconSize="25dp"
-        app:tabLineWidth="70dp"
+        app:tabLineWidth="full_width"
         app:tabLineColor="@color/colorPrimary"
         app:tabLineHeight="6dp"
         app:tabBackground="@drawable/bg_ripple_grey_over_white"

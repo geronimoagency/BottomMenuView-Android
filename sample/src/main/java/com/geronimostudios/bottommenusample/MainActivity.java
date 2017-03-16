@@ -8,33 +8,20 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
 
 import com.geronimostudios.ui.BottomMenuView;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     private BottomMenuView mMenuView;
     private ViewPager mViewPager;
-    private ViewPager.OnPageChangeListener mCustomTabsPagerChangeListener
-            = new ViewPager.OnPageChangeListener() {
-        @Override
-        public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
-        }
-
-        @Override
-        public void onPageSelected(int position) {
-            mMenuView.setCurrentPage(position); // with animation
-            //mMenuView.setCurrentPage(position, false); // without animation
-        }
-
-        @Override
-        public void onPageScrollStateChanged(int state) {
-
-        }
-    };
+    private View mNoViewPagerContainer;
+    private TextView mCustomTabPosition;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +33,12 @@ public class MainActivity extends AppCompatActivity {
         mViewPager.setAdapter(adapter);
 
         mMenuView = (BottomMenuView) findViewById(R.id.bottom_menu_view);
+        mNoViewPagerContainer = findViewById(R.id.no_view_pager_container);
+        mCustomTabPosition = (TextView) findViewById(R.id.no_view_pager_position);
+
+        findViewById(R.id.goto_tab_1).setOnClickListener(this);
+        findViewById(R.id.goto_tab_2).setOnClickListener(this);
+        findViewById(R.id.goto_tab_3).setOnClickListener(this);
 
         onSetupMenuWithViewPagerRequested();
     }
@@ -72,6 +65,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void onSetupMenuWithViewPagerRequested() {
+        mViewPager.setVisibility(View.VISIBLE);
+        mNoViewPagerContainer.setVisibility(View.GONE);
+
         mMenuView.setupWith(mViewPager);
         mMenuView.setIconSize((int) getResources().getDimension(R.dimen.sample_icon_height_25));
         mMenuView.setUnderlineHeight((int) getResources().getDimension(R.dimen.sample_underline_height_4));
@@ -79,7 +75,6 @@ public class MainActivity extends AppCompatActivity {
         mMenuView.setTabBackground(ContextCompat.getDrawable(this, R.drawable.bg_ripple_grey_over_white));
         mMenuView.setUnderlineMode(BottomMenuView.LINE_AUTO);
 
-        mViewPager.removeOnPageChangeListener(mCustomTabsPagerChangeListener);
         mMenuView.setListener(new BottomMenuView.Listener() {
             @Override
             public void onMenuPageChanged(int page) {
@@ -89,6 +84,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void onSetupMenuWithCustomTabsRequested() {
+        mViewPager.setVisibility(View.GONE);
+        mNoViewPagerContainer.setVisibility(View.VISIBLE);
+
         mMenuView.setupWith(createDummyTabs());
         mMenuView.setIconSize((int) getResources().getDimension(R.dimen.sample_icon_height_40));
         mMenuView.setUnderlineHeight((int) getResources().getDimension(R.dimen.sample_underline_height_2));
@@ -96,12 +94,13 @@ public class MainActivity extends AppCompatActivity {
         mMenuView.setTabBackground(ContextCompat.getDrawable(this, R.drawable.bg_sample));
         mMenuView.setUnderlineMode(BottomMenuView.LINE_FULL_WIDTH);
 
-        mViewPager.addOnPageChangeListener(mCustomTabsPagerChangeListener);
         mMenuView.setListener(new BottomMenuView.Listener() {
             @Override
             public void onMenuPageChanged(int page) {
                 Log.d("debug", "page changed with custom tabs : " + page);
-                mViewPager.setCurrentItem(page);
+                mCustomTabPosition.setText(String.format(
+                        Locale.getDefault(),"Selected position: %d", page
+                ));
             }
         });
     }
@@ -124,5 +123,23 @@ public class MainActivity extends AppCompatActivity {
                 ContextCompat.getDrawable(this, R.drawable.bg_ripple_grey_over_white)
         ));
         return tabs;
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.goto_tab_1:
+                mMenuView.setCurrentPage(0); // with animation
+                // mMenuView.setCurrentPage(0, false); // without animation
+                break;
+            case R.id.goto_tab_2:
+                mMenuView.setCurrentPage(1);
+                break;
+            case R.id.goto_tab_3:
+                mMenuView.setCurrentPage(2);
+                break;
+            default:
+                throw new IllegalArgumentException("Invalid view id");
+        }
     }
 }
