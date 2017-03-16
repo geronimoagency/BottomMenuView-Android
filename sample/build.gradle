@@ -1,29 +1,41 @@
 apply plugin: 'com.android.application'
 
+Properties properties = new Properties()
+properties.load(project.rootProject.file('local.properties').newDataInputStream())
+
 android {
     compileSdkVersion 25
     buildToolsVersion "25.0.2"
+
     defaultConfig {
         applicationId "com.geronimostudios.bottommenusample"
         minSdkVersion 11
         targetSdkVersion 25
         versionCode 1
         versionName "1.0"
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
+
+    signingConfigs {
+        releaseKeyStore {
+            storeFile file(properties.getProperty("sample.keystore.path"))
+            storePassword properties.getProperty("sample.keystore.store_password")
+            keyAlias properties.getProperty("sample.keystore.key_alias")
+            keyPassword properties.getProperty("sample.keystore.key_password")
+        }
+    }
+
     buildTypes {
         release {
             minifyEnabled false
+            shrinkResources false
+            minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.releaseKeyStore
         }
     }
 }
 
 dependencies {
     compile project(':bottommenuview')
-    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
-        exclude group: 'com.android.support', module: 'support-annotations'
-    })
     compile 'com.android.support:appcompat-v7:25.1.0'
-    testCompile 'junit:junit:4.12'
 }
