@@ -4,4 +4,8 @@
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
     <color name="default_separator">#d6d6d6</color>
+
+    <color name="yellow">#f4e34b</color>
+    <color name="green">#a7d088</color>
+    <color name="blue">#95c0e8</color>
 </resources>

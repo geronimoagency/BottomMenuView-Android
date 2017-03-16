@@ -11,6 +11,7 @@ import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.RectShape;
 import android.os.Build;
 import android.support.annotation.ColorInt;
+import android.support.annotation.Dimension;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.FloatRange;
 import android.support.annotation.IntDef;
@@ -33,9 +34,21 @@ import java.util.List;
 
 public class BottomMenuView extends View {
 
+    /**
+     * The width of the underline will be equals to the icon size * 2.
+     */
     public static final int LINE_AUTO = -1;
+
+    /**
+     * The underline will have the same width than his parent {@link Tab}.
+     */
     public static final int LINE_FULL_WIDTH = -2;
-    public static final int LINE_CUSTOM = -3;
+
+    /**
+     * This mode is used when a custom width is specified.
+     * See {@link #setUnderlineWidth(int)}.
+     */
+    private static final int LINE_CUSTOM = -3;
 
     @IntDef({LINE_AUTO, LINE_FULL_WIDTH, LINE_CUSTOM})
     @Retention(RetentionPolicy.SOURCE)
@@ -158,11 +171,12 @@ public class BottomMenuView extends View {
 
         Resources res = context.getResources();
         if (mItemSize == -1) {
-            mItemSize = res.getDimension(R.dimen.menu_item_size);
+            mItemSize = res.getDimension(R.dimen.bottommenuview_default_menu_item_size);
         }
 
         if (mUnderlineHeight == -1) {
-            mUnderlineHeight = res.getDimension(R.dimen.menu_underline_height);
+            mUnderlineHeight
+                    = res.getDimension(R.dimen.bottommenuview_default_menu_underline_height);
         }
 
         if (lineColor == -1) {
@@ -176,6 +190,79 @@ public class BottomMenuView extends View {
 
         if (isInEditMode()) {
             fillWithFakeData();
+        }
+    }
+
+    /**
+     * Change the mode of the underline width.
+     * The mode has to be {@link #LINE_AUTO} or {@link #LINE_FULL_WIDTH}.
+     * If you want a custom width, you have to use {@link #setUnderlineWidth(int)}.
+     *
+     * @param mode {@link #LINE_AUTO} or {@link #LINE_FULL_WIDTH}
+     */
+    public void setUnderlineMode(@LineMode int mode) {
+        if (mode != LINE_AUTO && mode != LINE_FULL_WIDTH) {
+            throw new IllegalArgumentException("Invalid mode");
+        }
+        mUnderlineMode = mode;
+        requestLayout();
+    }
+
+    /**
+     * Change the size of the underline.
+     *
+     * @param width a dimension in pixel.
+     */
+    public void setUnderlineWidth(@Dimension int width) {
+        mUnderlineMode = LINE_CUSTOM;
+        mUnderlineWidth = width;
+        invalidate();
+    }
+
+    /**
+     * Change the color of the underline.
+     *
+     * @param color a rgb color.
+     */
+    public void setUnderlineColor(@ColorInt int color) {
+        mUnderlineDrawable.setColorFilter(color, PorterDuff.Mode.SRC);
+        invalidate();
+    }
+
+    /**
+     * Change the height of the underline.
+     *
+     * @param dimension the new height of the underline in pixel.
+     */
+    public void setUnderlineHeight(@Dimension int dimension) {
+        mUnderlineHeight = dimension;
+        invalidate();
+    }
+
+    /**
+     * Change the size of the icon of each {@link Tab}.
+     *
+     * @param dimension the new size in pixel.
+     */
+    public void setIconSize(@Dimension int dimension) {
+        mItemSize = dimension;
+        invalidate();
+    }
+
+    /**
+     * Change the background drawable of each {@link Tab}.
+     * The {@link android.graphics.drawable.RippleDrawable} are supported by this view.
+     *
+     * @param tabBackground a drawable or null.
+     */
+    public void setTabBackground(@Nullable Drawable tabBackground) {
+        unregisterDrawableCallback();
+        mDefaultTabBackground = tabBackground;
+        if (mTabs != null) {
+            for (Tab tab : mTabs) {
+                tab.mDrawable = getCopyOfDefaultTabBackground();
+            }
+            invalidate();
         }
     }
 
@@ -508,7 +595,6 @@ public class BottomMenuView extends View {
                     mCurrentPage,
                     position
             );
-            animator.setAutoCancel(true);
             animator.setDuration(150);
             animator.setInterpolator(new DecelerateInterpolator());
 

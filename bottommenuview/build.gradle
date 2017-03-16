@@ -3,15 +3,17 @@ apply plugin: 'com.github.dcendents.android-maven'
 apply plugin: 'com.jfrog.bintray'
 apply from: '../config/quality.gradle'
 
+String library_version = '0.0.1'
+
 android {
     compileSdkVersion 25
     buildToolsVersion "25.0.2"
 
     defaultConfig {
-        minSdkVersion 19
+        minSdkVersion 11
         targetSdkVersion 25
         versionCode 1
-        versionName '0.0.0'
+        versionName library_version
     }
 
     buildTypes {
@@ -52,7 +54,7 @@ task findConventions << {
 }
 
 group = 'com.geronimostudios.ui' //bintray org/group name
-version = '0.0.0' //version
+version = library_version //version
 
 install {
     repositories.mavenInstaller {
@@ -64,7 +66,7 @@ install {
             packaging 'aar'
             groupId 'com.geronimostudios.ui'
             artifactId 'bottommenuview'
-            version '0.0.0'
+            version library_version
 
             licenses {
                 license {
@@ -113,8 +115,8 @@ bintray {
         labels = ['android', 'menu', 'view']
         publicDownloadNumbers = true
         version {
-            vcsTag = '0.0.0'
-            name = '0.0.0'
+            vcsTag = library_version
+            name = library_version
             desc = 'A bottom menu view for Android'
 
             gpg {

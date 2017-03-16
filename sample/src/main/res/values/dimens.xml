@@ -1,3 +1,7 @@
 <resources>
     <dimen name="default_padding">16dp</dimen>
+    <dimen name="sample_icon_height_40">40dp</dimen>
+    <dimen name="sample_underline_height_2">2dp</dimen>
+    <dimen name="sample_icon_height_25">25dp</dimen>
+    <dimen name="sample_underline_height_4">4dp</dimen>
 </resources>

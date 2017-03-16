@@ -73,6 +73,11 @@ public class MainActivity extends AppCompatActivity {
 
     private void onSetupMenuWithViewPagerRequested() {
         mMenuView.setupWith(mViewPager);
+        mMenuView.setIconSize((int) getResources().getDimension(R.dimen.sample_icon_height_25));
+        mMenuView.setUnderlineHeight((int) getResources().getDimension(R.dimen.sample_underline_height_4));
+        mMenuView.setUnderlineColor(ContextCompat.getColor(this, R.color.colorPrimaryDark));
+        mMenuView.setTabBackground(ContextCompat.getDrawable(this, R.drawable.bg_ripple_grey_over_white));
+        mMenuView.setUnderlineMode(BottomMenuView.LINE_AUTO);
 
         mViewPager.removeOnPageChangeListener(mCustomTabsPagerChangeListener);
         mMenuView.setListener(new BottomMenuView.Listener() {
@@ -85,6 +90,11 @@ public class MainActivity extends AppCompatActivity {
 
     private void onSetupMenuWithCustomTabsRequested() {
         mMenuView.setupWith(createDummyTabs());
+        mMenuView.setIconSize((int) getResources().getDimension(R.dimen.sample_icon_height_40));
+        mMenuView.setUnderlineHeight((int) getResources().getDimension(R.dimen.sample_underline_height_2));
+        mMenuView.setUnderlineColor(ContextCompat.getColor(this, R.color.colorAccent));
+        mMenuView.setTabBackground(ContextCompat.getDrawable(this, R.drawable.bg_sample));
+        mMenuView.setUnderlineMode(BottomMenuView.LINE_FULL_WIDTH);
 
         mViewPager.addOnPageChangeListener(mCustomTabsPagerChangeListener);
         mMenuView.setListener(new BottomMenuView.Listener() {
