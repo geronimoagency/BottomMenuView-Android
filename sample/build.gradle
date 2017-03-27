@@ -26,9 +26,9 @@ android {
 
     buildTypes {
         release {
-            minifyEnabled false
-            shrinkResources false
-            minifyEnabled false
+            shrinkResources true
+            minifyEnabled true
+            useProguard true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.releaseKeyStore
         }
@@ -37,5 +37,5 @@ android {
 
 dependencies {
     compile project(':bottommenuview')
-    compile 'com.android.support:appcompat-v7:25.1.0'
+    compile 'com.android.support:appcompat-v7:25.3.0'
 }

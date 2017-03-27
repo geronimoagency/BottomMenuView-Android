@@ -11,7 +11,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
-import com.geronimostudios.ui.BottomMenuView;
+import com.geronimostudios.ui.bottommenuview.BottomMenuView;
 
 import java.util.ArrayList;
 import java.util.Locale;

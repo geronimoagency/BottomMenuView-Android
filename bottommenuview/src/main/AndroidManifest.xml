@@ -1,5 +1,5 @@
 <manifest
-    package="com.geronimostudios.ui">
+    package="com.geronimostudios.ui.bottommenuview">
 
     <application />
 </manifest>

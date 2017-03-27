@@ -8,7 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.geronimostudios.ui.BottomMenuView;
+import com.geronimostudios.ui.bottommenuview.BottomMenuView;
 
 /**
  * Created by jerome on 14/03/17.
