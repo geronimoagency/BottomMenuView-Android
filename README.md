@@ -10,7 +10,7 @@ The sample app is available in this repository under sample/.
 
 Gradle
 =======
-Include the dependency [Download (.aar)](https://bintray.com/geronimostudios/geronimostudios/download_file?file_path=com%2Fgeronimostudios%2Fui%2Fbottommenuview%2F0.0.1%2Fbottommenuview-0.0.1.aar) :
+Include the dependency [Download (.aar)](https://bintray.com/geronimostudios/geronimostudios/download_file?file_path=com%2Fgeronimostudios%2Fbottommenuview%2Fbottommenuview%2F0.0.1%2Fbottommenuview-0.0.1.aar) :
 
 ```groovy
 dependencies {
