@@ -2,7 +2,7 @@
 
 This Bottom Menu view can be used with a view pager or with custom tabs.
 
-[ ![Download](https://api.bintray.com/packages/geronimostudios/geronimostudios/com.geronimostudios.ui.bottommenuview/images/download.svg?version=0.0.1) ](https://bintray.com/geronimostudios/geronimostudios/com.geronimostudios.ui.bottommenuview/0.0.1/link)
+[ ![Download](https://api.bintray.com/packages/geronimostudios/geronimostudios/com.geronimostudios.bottommenuview/images/download.svg?version=0.0.1) ](https://bintray.com/geronimostudios/geronimostudios/com.geronimostudios.bottommenuview/0.0.1/link)
 
 Sample app
 =======
@@ -14,7 +14,7 @@ Include the dependency [Download (.aar)](https://bintray.com/geronimostudios/ger
 
 ```groovy
 dependencies {
-    compile 'com.geronimostudios.ui.bottommenuview:bottommenuview:0.0.1'
+    compile 'com.geronimostudios.bottommenuview:bottommenuview:0.0.1'
 }
 ```
 
@@ -138,7 +138,7 @@ Customize
 | `tabLineWidth`            | `auto`, `full_width`, `@dimen/tab_width` | Indicator line width mode |
 
 ```xml
-    <com.geronimostudios.ui.bottommenuview.BottomMenuView
+    <com.geronimostudios.bottommenuview.BottomMenuView
         app:tabIconSize="25dp"
         app:tabLineWidth="full_width"
         app:tabLineColor="@color/colorPrimary"

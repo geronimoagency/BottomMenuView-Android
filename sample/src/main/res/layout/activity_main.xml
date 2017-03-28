@@ -59,7 +59,7 @@
         android:layout_height="1dp"
         android:background="@color/default_separator" />
 
-    <com.geronimostudios.ui.bottommenuview.BottomMenuView
+    <com.geronimostudios.bottommenuview.BottomMenuView
         app:tabIconSize="25dp"
         app:tabLineWidth="full_width"
         app:tabLineColor="@color/colorPrimary"

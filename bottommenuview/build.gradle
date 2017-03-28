@@ -52,18 +52,18 @@ task findConventions << {
     println project.getConvention()
 }
 
-group = 'com.geronimostudios.ui' //bintray org/group name
+group = 'com.geronimostudios.bottommenuview' //bintray org/group name
 version = library_version //version
 
 install {
     repositories.mavenInstaller {
         pom.project {
-            name 'com.geronimostudios.ui'
+            name 'BottomMenuView'
             description 'A bottom menu view for Android'
             url 'https://github.com/geronimoagency/BottomMenuView-Android'
 
             packaging 'aar'
-            groupId 'com.geronimostudios.ui'
+            groupId 'com.geronimostudios.bottommenuview'
             artifactId 'bottommenuview'
             version library_version
 
@@ -105,7 +105,7 @@ bintray {
 
     pkg {
         repo = 'geronimostudios'
-        name = 'com.geronimostudios.ui.bottommenuview'
+        name = 'com.geronimostudios.bottommenuview'
         userOrg = 'geronimostudios'
         licenses = ['Apache-2.0']
         vcsUrl = 'https://github.com/geronimoagency/BottomMenuView-Android.git'

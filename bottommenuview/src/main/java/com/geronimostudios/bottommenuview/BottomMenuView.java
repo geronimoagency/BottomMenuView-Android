@@ -1,4 +1,4 @@
-package com.geronimostudios.ui.bottommenuview;
+package com.geronimostudios.bottommenuview;
 
 import android.animation.ObjectAnimator;
 import android.content.Context;
