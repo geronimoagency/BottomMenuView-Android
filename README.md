@@ -6,7 +6,8 @@ This Bottom Menu view can be used with a view pager or with custom tabs.
 
 Sample app
 =======
-The sample app is available in this repository under sample/.
+The sample app is available in this repository under sample/.<br>
+You can also try it on Google Play : https://play.google.com/store/apps/details?id=com.geronimostudios.bottommenusample
 
 Gradle
 =======
